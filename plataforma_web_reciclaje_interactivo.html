@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultura Digital - Reciclaje de Botellas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        eco: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        sand: {
+                            50: '#fdfbf7',
+                            100: '#fbeee0',
+                            200: '#f7ddc2',
+                            300: '#f0c497',
+                            400: '#e5a56b',
+                            500: '#da8744',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fdfbf7;
+        }
+        .serif-title {
+            font-family: 'Playfair Display', serif;
+        }
+        /* Ocultar barra de scroll en contenedores específicos */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Animaciones para el ecualizador visual del Podcast */
+        @keyframes bounce-bar {
+            0%, 100% { height: 4px; }
+            50% { height: 36px; }
+        }
+        .eq-bar {
+            animation: bounce-bar 1s ease-in-out infinite;
+        }
+        .eq-bar:nth-child(2) { animation-delay: 0.15s; animation-duration: 0.8s; }
+        .eq-bar:nth-child(3) { animation-delay: 0.3s; animation-duration: 1.2s; }
+        .eq-bar:nth-child(4) { animation-delay: 0.45s; animation-duration: 0.9s; }
+        .eq-bar:nth-child(5) { animation-delay: 0.1s; animation-duration: 1.1s; }
+    </style>
+</head>
+<body class="text-slate-800 selection:bg-eco-200 selection:text-eco-900 overflow-x-hidden">
+
+    <!-- HEADER / NAVIGATION DE NAVEGACIÓN -->
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-eco-100 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-full bg-eco-100 flex items-center justify-center text-eco-600 animate-pulse">
+                    <i class="fa-solid fa-recycle text-xl"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-slate-900 tracking-tight block text-sm sm:text-base">HUELLA VERDE</span>
+                    <span class="text-xs text-eco-600 font-medium block -mt-1">Cultura Digital • Grupo 206</span>
+                </div>
+            </a>
+
+            <!-- Navegación -->
+            <nav class="hidden md:flex items-center gap-6">
+                <a href="#inicio" class="text-sm font-medium text-slate-600 hover:text-eco-600 transition-colors">Inicio</a>
+                <a href="#herramientas" class="text-sm font-medium text-slate-600 hover:text-eco-600 transition-colors">Herramientas</a>
+                <a href="#narrativas" class="text-sm font-medium text-slate-600 hover:text-eco-600 transition-colors">Narrativas</a>
+                <a href="#juego" class="text-sm font-semibold text-white bg-eco-600 px-4 py-2 rounded-full hover:bg-eco-700 transition-all shadow-md shadow-eco-200 flex items-center gap-2">
+                    <i class="fa-solid fa-gamepad"></i> Clasificador
+                </a>
+                <a href="#encuestas" class="text-sm font-medium text-slate-600 hover:text-eco-600 transition-colors">Encuestas</a>
+                <a href="#conclusiones" class="text-sm font-medium text-slate-600 hover:text-eco-600 transition-colors">Conclusiones</a>
+            </nav>
+
+            <!-- Selector de Modos (Sitio Web vs Presentación de Diapositivas) -->
+            <div class="flex items-center gap-2 bg-slate-100 p-1 rounded-full border border-slate-200">
+                <button id="btn-mode-site" onclick="switchMode('site')" class="px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all bg-white text-eco-700 shadow-sm">
+                    <i class="fa-solid fa-earth-americas"></i> <span class="hidden sm:inline">Web</span>
+                </button>
+                <button id="btn-mode-slides" onclick="switchMode('slides')" class="px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all text-slate-600 hover:text-slate-900">
+                    <i class="fa-solid fa-circle-play"></i> <span class="hidden sm:inline">Diapositivas</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTAINER PRINCIPAL MODO SITIO WEB -->
+    <main id="view-site" class="block">
+        
+        <!-- SECTION 1: PORTADA HERO -->
+        <section id="inicio" class="relative overflow-hidden bg-gradient-to-br from-eco-50 via-sand-100 to-eco-100/50 pt-12 pb-24 md:py-32 border-b border-eco-100">
+            <!-- Decoraciones flotantes en SVG -->
+            <div class="absolute -top-12 -left-12 w-64 h-64 bg-eco-200/40 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute right-0 bottom-0 w-96 h-96 bg-sand-200/30 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-eco-100 text-eco-800 text-xs font-semibold tracking-wide uppercase">
+                            <i class="fa-solid fa-laptop-code animate-spin"></i> Cultura Digital • Proyecto Escolar
+                        </span>
+                        
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight">
+                            Reciclaje de <br class="hidden sm:inline">
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-eco-600 to-eco-800 font-serif italic">Botellas de Plástico</span>
+                        </h1>
+                        
+                        <p class="text-base sm:text-lg text-slate-600 max-w-xl mx-auto lg:mx-0">
+                            Una propuesta interactiva y digital para transformar la gestión de residuos en el salón de clases, basada en estadísticas reales de nuestra comunidad y el compromiso estudiantil.
+                        </p>
+
+                        <!-- Autoras -->
+                        <div class="pt-6 border-t border-slate-200/80 max-w-md mx-auto lg:mx-0">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Equipo de Investigación</p>
+                            <div class="flex flex-wrap gap-2.5 justify-center lg:justify-start">
+                                <span class="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-medium text-slate-700 shadow-sm flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Carol Sofía Díaz Morales
+                                </span>
+                                <span class="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-medium text-slate-700 shadow-sm flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span> Briana Andrea Navarro Puente
+                                </span>
+                                <span class="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-medium text-slate-700 shadow-sm flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-pink-400"></span> Dulce Ivonne Xiochitiotzi H.
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-4 pt-4 justify-center lg:justify-start">
+                            <a href="#juego" class="px-6 py-3.5 rounded-2xl bg-eco-600 text-white font-semibold hover:bg-eco-700 shadow-lg shadow-eco-200 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-circle-play"></i> Jugar al Eco-Clasificador
+                            </a>
+                            <a href="#encuestas" class="px-6 py-3.5 rounded-2xl bg-white border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 shadow-sm transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-chart-simple"></i> Ver Estadísticas
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Lado Ilustrativo Animado -->
+                    <div class="lg:col-span-5 flex justify-center">
+                        <div class="relative w-full max-w-[340px] aspect-square bg-white rounded-[2.5rem] shadow-xl border border-eco-100 p-8 flex flex-col justify-between items-center overflow-hidden">
+                            <!-- Background pattern -->
+                            <div class="absolute inset-0 opacity-5 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                            
+                            <!-- Dibujo interactivo imitando página 1 -->
+                            <div class="relative z-10 w-44 h-44 bg-eco-50 rounded-full flex items-center justify-center border-4 border-dashed border-eco-200">
+                                <span class="text-7xl">👦</span>
+                                <!-- Elementos flotantes de basura reciclable -->
+                                <span class="absolute top-2 right-2 text-3xl animate-bounce">🥤</span>
+                                <span class="absolute bottom-1 left-2 text-2xl rotate-12">📦</span>
+                                <span class="absolute top-1/2 -left-6 text-2xl -rotate-12">🍂</span>
+                            </div>
+
+                            <div class="text-center relative z-10 w-full bg-eco-50/80 backdrop-blur-sm p-4 rounded-2xl border border-eco-100">
+                                <p class="text-xs text-eco-800 font-semibold uppercase tracking-wider mb-1">¡Clasifica y Aprende!</p>
+                                <p class="text-[11px] text-slate-500">Separar botellas de plástico reduce hasta un 80% la huella de carbono escolar.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: HERRAMIENTAS COLABORATIVAS -->
+        <section id="herramientas" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                    <span class="text-xs font-bold uppercase tracking-widest text-eco-600 bg-eco-50 px-3 py-1.5 rounded-full">Plataformas de Trabajo Colectivo</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        ¿Cómo nos organizamos digitalmente?
+                    </h2>
+                    <p class="text-slate-500 text-sm sm:text-base">
+                        En la materia de <strong class="text-slate-700">Cultura Digital</strong> aprendimos que el trabajo ecológico inicia con la colaboración. Usamos estas herramientas de software libre y seguro:
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                    
+                    <!-- Tarjeta CryptPad -->
+                    <div class="bg-gradient-to-b from-slate-50 to-white rounded-[2rem] border border-slate-200 p-8 shadow-sm flex flex-col justify-between hover:border-eco-300 hover:shadow-lg transition-all duration-300">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-user-shield"></i>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-semibold">100% Cifrado</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900">CryptPad</h3>
+                            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                Plataforma colaborativa en tiempo real con cifrado de extremo a extremo que protege la privacidad de los usuarios. Permite crear textos, hojas de cálculo, diagramas y presentaciones sin necesidad de instalar programas.
+                            </p>
+                            
+                            <ul class="space-y-2.5 pt-2 text-xs sm:text-sm text-slate-600">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-eco-500"></i> Trabajo en equipo en tiempo real.</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-eco-500"></i> No requiere descargas, se usa desde el navegador.</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-eco-500"></i> Herramientas de texto, tablas y presentaciones.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Simulador Interactivo de Editor -->
+                        <div class="mt-8 pt-6 border-t border-slate-200">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">Simulador de Edición de Notas (Prueba escribir):</p>
+                            <div class="bg-slate-900 rounded-xl p-4 text-emerald-400 font-mono text-xs space-y-2 shadow-inner">
+                                <div class="flex items-center justify-between text-[10px] text-slate-500 pb-2 border-b border-slate-800">
+                                    <span>📄 nota_ecologica_cryptpad.txt</span>
+                                    <span class="animate-pulse"><i class="fa-solid fa-circle text-red-500 text-[8px]"></i> En línea</span>
+                                </div>
+                                <textarea id="cryptpad-textarea" oninput="simulateCoAuthor('cryptpad')" class="w-full bg-transparent border-none outline-none focus:ring-0 text-slate-200 resize-none h-20 placeholder-slate-600" placeholder="Escribe aquí ideas de reciclaje..."></textarea>
+                                <div id="cryptpad-coauthor" class="text-[11px] text-eco-300 italic"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta Riseup Pad -->
+                    <div class="bg-gradient-to-b from-slate-50 to-white rounded-[2rem] border border-slate-200 p-8 shadow-sm flex flex-col justify-between hover:border-eco-300 hover:shadow-lg transition-all duration-300">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-feather-pointed"></i>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-md bg-red-50 text-red-700 text-xs font-semibold">Sin Registro</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900">Riseup Pad</h3>
+                            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                Herramienta en línea ágil y minimalista que permite escribir documentos compartidos al instante. Destaca por su facilidad de uso al no requerir la creación de cuentas de usuario obligatorias.
+                            </p>
+                            
+                            <ul class="space-y-2.5 pt-2 text-xs sm:text-sm text-slate-600">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-eco-500"></i> Edición colaborativa directa e instantánea.</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-eco-500"></i> Uso gratuito y libre de publicidad invasiva.</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-eco-500"></i> Enlaces rápidos para compartir con un clic.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Simulador de Editor Riseup Pad -->
+                        <div class="mt-8 pt-6 border-t border-slate-200">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">Simulador de Redacción Rápida (Prueba escribir):</p>
+                            <div class="bg-amber-50 rounded-xl p-4 text-slate-800 font-sans text-xs space-y-2 shadow-inner border border-amber-200">
+                                <div class="flex items-center justify-between text-[10px] text-amber-600 pb-2 border-b border-amber-200">
+                                    <span>📝 riseup-pad-aula-206.md</span>
+                                    <span class="flex items-center gap-1"><i class="fa-solid fa-user-group text-[8px] text-amber-500"></i> 2 activos</span>
+                                </div>
+                                <textarea id="riseup-textarea" oninput="simulateCoAuthor('riseup')" class="w-full bg-transparent border-none outline-none focus:ring-0 text-slate-700 resize-none h-20 placeholder-slate-400" placeholder="Anota lemas ecológicos aquí..."></textarea>
+                                <div id="riseup-coauthor" class="text-[11px] text-amber-700 font-medium italic"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: MI HUELLA VERDE Y NARRATIVAS -->
+        <section id="narrativas" class="py-20 bg-eco-50/50 border-y border-eco-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- Lado Izquierdo: Narraciones -->
+                    <div class="lg:col-span-7 space-y-8">
+                        <div class="space-y-4">
+                            <span class="text-xs font-bold uppercase tracking-widest text-eco-700 bg-eco-100 px-3 py-1.5 rounded-full">Narraciones Ambientales</span>
+                            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-serif italic">Mi Huella Verde</h2>
+                            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                                Reflexión estudiantil grupal sobre el impacto de las acciones diarias en el ecosistema, narrando la evolución de nuestra conciencia ecológica comunitaria.
+                            </p>
+                        </div>
+
+                        <!-- Selector de Cuentos / Acordeón -->
+                        <div class="space-y-4">
+                            
+                            <!-- Cuento 1 -->
+                            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-full bg-eco-100 text-eco-700 flex items-center justify-center font-bold text-sm">1</span>
+                                    <h4 class="font-bold text-slate-900 text-base">La Introducción: Observando nuestro entorno</h4>
+                                </div>
+                                <p class="text-xs sm:text-sm text-slate-600 pl-11 leading-relaxed">
+                                    "En nuestro grupo reflexionamos sobre cómo las acciones de las personas afectan al medio ambiente. Observamos que muchas veces contaminamos sin darnos cuenta: tiramos basura, desperdiciamos agua y usamos demasiado plástico. Sin embargo, también descubrimos que pequeñas acciones pueden ayudar a cuidar nuestro planeta."
+                                </p>
+                            </div>
+
+                            <!-- Cuento 2 -->
+                            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-full bg-eco-100 text-eco-700 flex items-center justify-center font-bold text-sm">2</span>
+                                    <h4 class="font-bold text-slate-900 text-base">El Conflicto y la Acción Comunitaria</h4>
+                                </div>
+                                <p class="text-xs sm:text-sm text-slate-600 pl-11 leading-relaxed">
+                                    "Todo comenzó cuando en la escuela nos pidieron investigar sobre el medio ambiente... Mientras observábamos nuestra comunidad, vimos mucha basura en las calles y pocas personas reciclando. Decidimos trabajar juntos: organizamos una pequeña campaña para separar residuos, ahorrar agua y plantar árboles en áreas cercanas. También compartimos mensajes en redes sociales."
+                                </p>
+                            </div>
+
+                            <!-- Cuento 3 (Leyenda) -->
+                            <div class="bg-emerald-900 text-emerald-50 rounded-2xl p-6 space-y-3 shadow-md">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-full bg-emerald-800 text-emerald-300 flex items-center justify-center font-bold text-sm"><i class="fa-solid fa-tree"></i></span>
+                                    <h4 class="font-bold text-base text-white">Leyenda Ambiental del Bosque</h4>
+                                </div>
+                                <p class="text-xs sm:text-sm text-emerald-200 pl-11 italic leading-relaxed">
+                                    "Cuenta una leyenda que en un pequeño pueblo existía un bosque lleno de vida. Sin embargo, las personas comenzaron a tirar basura y contaminar los ríos. Un día, un grupo de jóvenes decidió limpiar el lugar y enseñar a las familias a reciclar. Separaron plástico, vidrio y papel. El bosque volvió a llenarse de árboles y animales..."
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Lado Derecho: Podcast & Cuadro Comparativo -->
+                    <div class="lg:col-span-5 space-y-8">
+                        
+                        <!-- Simulador de Reproductor de Podcast -->
+                        <div class="bg-slate-950 rounded-3xl p-6 text-white border border-slate-800 shadow-xl space-y-4 relative overflow-hidden">
+                            <!-- Glow Decoración -->
+                            <div class="absolute -right-12 -top-12 w-28 h-28 bg-eco-500/20 rounded-full blur-2xl"></div>
+                            
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-eco-600 to-emerald-400 flex items-center justify-center text-3xl shadow-lg shadow-eco-800/30">
+                                    🎙️
+                                </div>
+                                <div>
+                                    <span class="text-[10px] uppercase font-bold text-eco-400 tracking-wider">Audio Relato Oficial</span>
+                                    <h4 class="font-bold text-slate-100 text-sm">Podcast: Ecología y Conciencia</h4>
+                                    <p class="text-[11px] text-slate-400">Grupo 206 • 1.2 MB • MP3</p>
+                                </div>
+                            </div>
+
+                            <!-- Ecualizador de Barras Simuladas -->
+                            <div class="bg-slate-900/60 rounded-xl p-4 flex items-center justify-between gap-3 h-14">
+                                <div id="wave-container" class="flex items-end gap-[3px] h-9 w-2/3">
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                    <div class="w-[3px] bg-eco-500 rounded-full h-1"></div>
+                                </div>
+                                <span id="podcast-timer" class="text-xs font-mono text-slate-400">00:00 / 02:45</span>
+                            </div>
+
+                            <!-- Controles del Podcast -->
+                            <div class="flex items-center justify-center gap-6 pt-2">
+                                <button onclick="alert('Relato al inicio')" class="text-slate-400 hover:text-white transition-colors text-sm"><i class="fa-solid fa-backward-step"></i></button>
+                                <button id="btn-podcast-play" onclick="togglePodcast()" class="w-12 h-12 rounded-full bg-eco-500 hover:bg-eco-600 text-slate-950 flex items-center justify-center text-lg font-bold transition-all shadow-md shadow-eco-500/20">
+                                    <i id="play-icon" class="fa-solid fa-play ml-1"></i>
+                                </button>
+                                <button onclick="alert('Siguiente sección')" class="text-slate-400 hover:text-white transition-colors text-sm"><i class="fa-solid fa-forward-step"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Cuadro Comparativo de Narrativas -->
+                        <div class="bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm space-y-4">
+                            <h4 class="font-bold text-slate-950 text-sm uppercase tracking-wider border-b border-slate-100 pb-2">Canales de Narrativa Ambiental</h4>
+                            <div class="space-y-3">
+                                <div class="grid grid-cols-3 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-1">
+                                    <span>Tipo</span>
+                                    <span>Características</span>
+                                    <span class="text-right">Ventajas</span>
+                                </div>
+                                <div class="grid grid-cols-3 text-xs sm:text-sm py-1 border-b border-slate-50">
+                                    <span class="font-bold text-slate-800">🗣️ Oral</span>
+                                    <span class="text-slate-500">Transmisión directa</span>
+                                    <span class="text-slate-700 text-right font-medium">Mayor interacción</span>
+                                </div>
+                                <div class="grid grid-cols-3 text-xs sm:text-sm py-1 border-b border-slate-50">
+                                    <span class="font-bold text-slate-800">📝 Escrita</span>
+                                    <span class="text-slate-500">Cuentos y textos</span>
+                                    <span class="text-slate-700 text-right font-medium">Conserva datos</span>
+                                </div>
+                                <div class="grid grid-cols-3 text-xs sm:text-sm py-1">
+                                    <span class="font-bold text-eco-600">📱 Digital</span>
+                                    <span class="text-slate-500">Videos y QR</span>
+                                    <span class="text-eco-700 text-right font-bold">Máximo alcance</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: CLASIFICADOR ECOLÓGICO INTERACTIVO (GAME) -->
+        <section id="juego" class="py-20 bg-slate-900 text-white relative">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#22c55e_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- Información de la Propuesta Escolar -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <span class="text-xs font-bold uppercase tracking-widest text-eco-400 bg-eco-950/80 border border-eco-800 px-3.5 py-1.5 rounded-full">Lluvia de Ideas en Acción</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                            "Pequeñas acciones, pueden lograr un gran cambio"
+                        </h2>
+                        <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                            Nuestra propuesta de proyecto escolar consiste en colocar botes de basura separados dentro del salón para que los alumnos clasifiquen correctamente los residuos y eviten la contaminación de recursos aprovechables.
+                        </p>
+
+                        <!-- Explicación de botes -->
+                        <div class="space-y-3.5 text-xs sm:text-sm">
+                            <div class="flex items-center gap-3 bg-slate-800/50 p-3 rounded-xl border border-slate-700">
+                                <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">🥤</span>
+                                <div>
+                                    <p class="font-bold text-slate-100">Bote para Plástico (Amarillo)</p>
+                                    <p class="text-slate-400 text-xs">Botellas de agua, jugos, refrescos y envolturas limpias.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 bg-slate-800/50 p-3 rounded-xl border border-slate-700">
+                                <span class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">📦</span>
+                                <div>
+                                    <p class="font-bold text-slate-100">Bote para Papel y Cartón (Azul)</p>
+                                    <p class="text-slate-400 text-xs">Hojas, cuadernos usados, sobres y cajas limpias.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 bg-slate-800/50 p-3 rounded-xl border border-slate-700">
+                                <span class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">🍌</span>
+                                <div>
+                                    <p class="font-bold text-slate-100">Bote para Basura Orgánica (Verde)</p>
+                                    <p class="text-slate-400 text-xs">Restos de frutas, comida, cáscaras o servilletas de papel usadas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MINIJUEGO INTERACTIVO -->
+                    <div class="lg:col-span-7">
+                        <div class="bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-700 shadow-2xl space-y-6">
+                            
+                            <!-- Cabecera del juego -->
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="font-bold text-slate-100 text-lg">Juego: El Clasificador Ecológico</h4>
+                                    <p class="text-xs text-slate-400">Presiona el bote correspondiente para clasificar el residuo flotante</p>
+                                </div>
+                                <div class="bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-700 text-right">
+                                    <span class="text-[10px] block text-slate-500 uppercase font-bold">Puntuación</span>
+                                    <span id="game-score" class="text-base sm:text-lg font-extrabold text-eco-400">00 pts</span>
+                                </div>
+                            </div>
+
+                            <!-- Zona de juego: Elemento a Clasificar -->
+                            <div class="bg-slate-950 rounded-2xl p-8 flex flex-col items-center justify-center border-2 border-dashed border-slate-700 h-56 relative overflow-hidden">
+                                <div id="game-item-display" class="space-y-2 text-center transform transition-all duration-300">
+                                    <span id="game-item-icon" class="text-6xl sm:text-7xl block animate-bounce">🥤</span>
+                                    <span id="game-item-name" class="font-extrabold text-slate-200 text-base sm:text-lg tracking-wide block">Botella de Agua</span>
+                                </div>
+
+                                <!-- Feedback flotante de acierto/fallo -->
+                                <div id="game-feedback" class="absolute inset-0 bg-eco-900/90 backdrop-blur-sm flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
+                                    <span id="game-feedback-icon" class="text-5xl">✅</span>
+                                    <span id="game-feedback-text" class="font-extrabold text-white text-lg mt-2">¡Correcto!</span>
+                                </div>
+                            </div>
+
+                            <!-- Opciones: Los 3 Botes -->
+                            <div class="grid grid-cols-3 gap-3">
+                                
+                                <button onclick="submitClassification('plastico')" class="bg-amber-500/10 hover:bg-amber-500/20 active:bg-amber-500/30 border border-amber-500/30 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all group">
+                                    <span class="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">🟨</span>
+                                    <span class="text-[10px] sm:text-xs font-bold text-amber-300 uppercase tracking-wider">Plástico</span>
+                                </button>
+
+                                <button onclick="submitClassification('papel')" class="bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 border border-blue-500/30 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all group">
+                                    <span class="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">🟦</span>
+                                    <span class="text-[10px] sm:text-xs font-bold text-blue-300 uppercase tracking-wider">Papel / Cartón</span>
+                                </button>
+
+                                <button onclick="submitClassification('organico')" class="bg-emerald-500/10 hover:bg-emerald-500/20 active:bg-emerald-500/30 border border-emerald-500/30 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all group">
+                                    <span class="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">🟩</span>
+                                    <span class="text-[10px] sm:text-xs font-bold text-emerald-300 uppercase tracking-wider">Orgánico</span>
+                                </button>
+
+                            </div>
+
+                            <!-- Botón reiniciar juego -->
+                            <div class="text-center pt-2">
+                                <button onclick="resetGame()" class="text-xs text-slate-400 hover:text-slate-200 underline flex items-center gap-1.5 mx-auto">
+                                    <i class="fa-solid fa-rotate-left"></i> Reiniciar puntuación y juego
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: ENCUESTAS Y GRÁFICOS INTERACTIVOS (CHART.JS) -->
+        <section id="encuestas" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                    <span class="text-xs font-bold uppercase tracking-widest text-eco-600 bg-eco-50 px-3 py-1.5 rounded-full">Resultados del Sondeo</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        Análisis de Datos: Encuesta de 31 Respuestas
+                    </h2>
+                    <p class="text-slate-500 text-sm sm:text-base leading-relaxed">
+                        Evaluamos los hábitos de nuestra comunidad para entender el panorama ecológico de manera realista. Haz clic en las tarjetas para profundizar en la interpretación de los datos recopilados en el sondeo.
+                    </p>
+                </div>
+
+                <!-- Fila de Gráficos de Encuestas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Gráfico 1: Qué reciclan -->
+                    <div class="bg-slate-50 rounded-[2rem] border border-slate-200/80 p-6 shadow-sm flex flex-col justify-between hover:border-eco-200 transition-all">
+                        <div class="space-y-4">
+                            <h4 class="font-extrabold text-slate-900 text-sm tracking-wide uppercase border-b border-slate-200 pb-2 flex items-center gap-1.5">
+                                <i class="fa-solid fa-pie-chart text-eco-600"></i> ¿Qué reciclas en tu casa?
+                            </h4>
+                            <div class="relative w-full aspect-square max-h-[220px] mx-auto flex items-center justify-center">
+                                <canvas id="chart-reciclaje-tipo"></canvas>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-200 space-y-2">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Interpretación:</p>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Las <strong>botellas de plástico (64.5%)</strong> y las <strong>latas (25.8%)</strong> lideran con holgura. Esto evidencia que los envases comerciales son los más reconocidos y fáciles de separar para el ciudadano promedio.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico 2: Por qué reciclan -->
+                    <div class="bg-slate-50 rounded-[2rem] border border-slate-200/80 p-6 shadow-sm flex flex-col justify-between hover:border-eco-200 transition-all">
+                        <div class="space-y-4">
+                            <h4 class="font-extrabold text-slate-900 text-sm tracking-wide uppercase border-b border-slate-200 pb-2 flex items-center gap-1.5">
+                                <i class="fa-solid fa-chart-bar text-eco-600"></i> ¿Por qué reciclas en el día?
+                            </h4>
+                            <div class="relative w-full aspect-square max-h-[220px] mx-auto flex items-center justify-center">
+                                <canvas id="chart-reciclaje-motivo"></canvas>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-200 space-y-2">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Interpretación:</p>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Un aplastante <strong>86.7% lo hace por conciencia ambiental</strong> genuina y solo un 13.3% por obligación externa. Existe una sensibilidad ecológica latente sumamente valiosa para asentar proyectos.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico 3: Qué hacen con botellas -->
+                    <div class="bg-slate-50 rounded-[2rem] border border-slate-200/80 p-6 shadow-sm flex flex-col justify-between hover:border-eco-200 transition-all">
+                        <div class="space-y-4">
+                            <h4 class="font-extrabold text-slate-900 text-sm tracking-wide uppercase border-b border-slate-200 pb-2 flex items-center gap-1.5">
+                                <i class="fa-solid fa-recycle text-eco-600"></i> Tratamiento de Botellas Vacías
+                            </h4>
+                            <div class="relative w-full aspect-square max-h-[220px] mx-auto flex items-center justify-center">
+                                <canvas id="chart-reciclaje-botellas"></canvas>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-200 space-y-2">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Interpretación:</p>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Aunque el <strong>77.4% las reutiliza o recicla</strong>, un <strong>22.6%</strong> todavía las desecha con la basura común. Es crucial acercar botes de clasificación para erradicar este remanente.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- SECCIÓN EXTRAS DE GRAFICOS DE LA DIAPOSITIVA 21 -->
+                <div class="mt-16 bg-gradient-to-tr from-eco-900 to-emerald-950 text-white rounded-[2.5rem] p-8 sm:p-12 relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-80 h-80 bg-eco-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        
+                        <div class="lg:col-span-4 space-y-4">
+                            <span class="text-xs font-bold uppercase tracking-widest text-eco-300">Más Métricas de Conciencia</span>
+                            <h3 class="text-2xl sm:text-3xl font-extrabold font-serif italic">Métricas Ambientales Extendidas</h3>
+                            <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                Datos complementarios recolectados sobre la importancia de los árboles, la justificación de reciclar y los hábitos cotidianos de ahorro de agua para una perspectiva integral del salón.
+                            </p>
+                        </div>
+
+                        <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            
+                            <!-- Tarjeta Árboles -->
+                            <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10 space-y-3">
+                                <div class="flex items-center gap-2 text-eco-300 font-bold text-sm">
+                                    <span>🌳 Árboles</span>
+                                </div>
+                                <p class="text-xs text-slate-200">¿Qué beneficios tienen los árboles?</p>
+                                <div class="text-2xl font-black text-white">86.2%</div>
+                                <p class="text-[10px] text-slate-300 uppercase tracking-wide">Oxígeno, Sombra y Hogar Animal</p>
+                            </div>
+
+                            <!-- Tarjeta Importancia Reciclaje -->
+                            <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10 space-y-3">
+                                <div class="flex items-center gap-2 text-eco-300 font-bold text-sm">
+                                    <span>🌍 Reciclar</span>
+                                </div>
+                                <p class="text-xs text-slate-200">¿Por qué es importante reciclar?</p>
+                                <div class="text-2xl font-black text-white">65.5%</div>
+                                <p class="text-[10px] text-slate-300 uppercase tracking-wide">Reduce Contaminación General</p>
+                            </div>
+
+                            <!-- Tarjeta Ahorro Agua -->
+                            <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10 space-y-3">
+                                <div class="flex items-center gap-2 text-eco-300 font-bold text-sm">
+                                    <span>💧 Ahorro Agua</span>
+                                </div>
+                                <p class="text-xs text-slate-200">¿Cómo ahorrar agua a diario?</p>
+                                <div class="text-2xl font-black text-white">55.2%</div>
+                                <p class="text-[10px] text-slate-300 uppercase tracking-wide">Tomar Baños más Cortos</p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 6: CONCLUSIONES GENERALES Y TESTIMONIOS -->
+        <section id="conclusiones" class="py-20 bg-eco-50/50 border-t border-eco-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                    
+                    <!-- Lado Izquierdo: Conclusiones Generales -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <span class="text-xs font-bold uppercase tracking-widest text-eco-700 bg-eco-100 px-3 py-1.5 rounded-full">Resumen Analítico</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Conclusiones Generales</h2>
+                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                            Tras analizar las métricas y los hábitos estudiantiles de 31 personas, estructuramos cuatro ejes analíticos prioritarios:
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            
+                            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                                <span class="text-2xl">⚠️</span>
+                                <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wide">1. Hábitos Parciales</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed">
+                                    El reciclaje está presente pero se limita a botellas plásticas y latas. Faltan hábitos integrales de separación de papel, vidrio y residuos orgánicos.
+                                </p>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                                <span class="text-2xl">🌱</span>
+                                <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wide">2. Buena Motivación</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed">
+                                    La inmensa mayoría actúa por genuina responsabilidad ambiental, lo cual genera una base excelente para fomentar campañas de mayor calado.
+                                </p>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                                <span class="text-2xl">📈</span>
+                                <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wide">3. Espacio de Mejora</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed">
+                                    Casi una cuarta parte sigue mezclando botellas con basura común. Se requiere más información y botes clasificados cercanos.
+                                </p>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                                <span class="text-2xl">💚</span>
+                                <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wide">4. Cero Daño Intencional</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed">
+                                    Nadie reportó quemar basura o tirarla en el suelo. Se valida que existe educación básica respetuosa del entorno.
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Lado Derecho: Conclusiones Personales (Con Selector Interactivo) -->
+                    <div class="lg:col-span-5 bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-md space-y-6">
+                        <div class="space-y-1">
+                            <h3 class="text-xl font-bold text-slate-900">Conclusiones Personales</h3>
+                            <p class="text-xs text-slate-400">Presiona cada integrante para leer su reflexión individual</p>
+                        </div>
+
+                        <!-- Selector Tabulado de Integrantes -->
+                        <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                            <button onclick="selectConclusion('briana')" id="btn-tab-briana" class="w-1/3 py-2 rounded-lg text-xs font-bold transition-all bg-white text-eco-700 shadow-sm">
+                                Briana
+                            </button>
+                            <button onclick="selectConclusion('carol')" id="btn-tab-carol" class="w-1/3 py-2 rounded-lg text-xs font-medium transition-all text-slate-600 hover:text-slate-900">
+                                Carol
+                            </button>
+                            <button onclick="selectConclusion('dulce')" id="btn-tab-dulce" class="w-1/3 py-2 rounded-lg text-xs font-medium transition-all text-slate-600 hover:text-slate-900">
+                                Dulce
+                            </button>
+                        </div>
+
+                        <!-- Contenedor dinámico de opinión -->
+                        <div class="bg-eco-50 rounded-2xl p-6 border border-eco-100 min-h-[180px] flex flex-col justify-between">
+                            <p id="conclusion-text" class="text-xs sm:text-sm text-slate-600 italic leading-relaxed">
+                                "En conclusión, considero que reciclar el plástico es una de las formas más sencillas en las que nosotros como estudiantes podemos ayudar al medio ambiente..."
+                            </p>
+                            <div class="flex items-center gap-3 pt-4 border-t border-eco-100/60 mt-4">
+                                <span id="conclusion-avatar" class="text-3xl">👧</span>
+                                <div>
+                                    <h4 id="conclusion-name" class="font-bold text-slate-900 text-sm">Briana Andrea Navarro Puente</h4>
+                                    <p class="text-[10px] text-eco-700 uppercase tracking-widest font-semibold">Cultura Digital • Grupo 206</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- CONTAINER MODO DIAPOSITIVAS INTERACTIVAS (SLIDESHOW) -->
+    <main id="view-slides" class="hidden py-12 bg-slate-100 min-h-[calc(100vh-4rem)]">
+        <div class="max-w-4xl mx-auto px-4">
+            
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Visualizador de Presentaciones de Google Simulado</span>
+                <span id="slide-counter" class="text-xs font-bold bg-slate-200 px-3 py-1 rounded-full text-slate-700">Diapositiva 1 de 10</span>
+            </div>
+
+            <!-- Contenedor de la Diapositiva -->
+            <div class="bg-white rounded-[2rem] border border-slate-300 shadow-xl overflow-hidden aspect-[16/9] flex flex-col justify-between p-8 sm:p-12 relative">
+                <!-- Watermark / Decoración escolar similar a Canva / W de Word o marca de agua de las diapositivas -->
+                <div class="absolute bottom-4 right-4 text-xs font-bold text-slate-300 tracking-widest">W • GRUPO 206</div>
+
+                <!-- Diapositiva 1: Portada -->
+                <div id="slide-1" class="slide-content flex flex-col justify-between h-full">
+                    <span class="text-xs uppercase font-extrabold text-eco-600 tracking-widest">Cultura Digital</span>
+                    <div class="space-y-4">
+                        <h2 class="text-3xl sm:text-5xl font-black text-slate-900 leading-tight">RECICLAJE DE <br><span class="text-eco-600 font-serif italic">BOTELLAS</span></h2>
+                        <p class="text-xs text-slate-400 font-medium">Carol Sofía Diaz Morales • Briana Andrea Navarro Puente • Dulce Ivonne Xiochitiotzi Hernández</p>
+                    </div>
+                    <div class="flex items-center gap-4 text-slate-400 text-xs">
+                        <span>👩‍💻 Proyecto de Ecología Ilustrado Verde</span>
+                    </div>
+                </div>
+
+                <!-- Diapositiva 2: CryptPad -->
+                <div id="slide-2" class="slide-content hidden flex flex-col justify-between h-full">
+                    <span class="text-xs uppercase font-extrabold text-blue-600 tracking-widest">Herramientas Colaborativas • CryptPad</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+                        <div class="space-y-3">
+                            <h3 class="text-xl sm:text-2xl font-bold text-slate-900">¿Qué es CryptPad?</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">Es una plataforma en línea que permite crear y editar documentos de manera colaborativa y segura. Las personas pueden trabajar al mismo tiempo en textos, presentaciones y hojas de cálculo sin descargas.</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 text-xs space-y-1.5 text-blue-900">
+                            <p class="font-bold">Características Clave:</p>
+                            <p>• Trabajo en equipo en tiempo real.</p>
+                            <p>• Protección robusta de privacidad.</p>
+                            <p>• Se usa directamente desde el navegador.</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Slide 2/10</span>
+                </div>
+
+                <!-- Diapositiva 3: Riseup Pad -->
+                <div id="slide-3" class="slide-content hidden flex flex-col justify-between h-full">
+                    <span class="text-xs uppercase font-extrabold text-red-600 tracking-widest">Herramientas Colaborativas • Riseup Pad</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+                        <div class="space-y-3">
+                            <h3 class="text-xl sm:text-2xl font-bold text-slate-900">¿Qué es Riseup Pad?</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">Es una herramienta en línea muy sencilla que permite escribir textos colaborativos entre varias personas simultáneamente, libre de registro o cuentas obligatorias.</p>
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-2xl border border-red-100 text-xs space-y-1.5 text-red-900">
+                            <p class="font-bold">Para qué sirve:</p>
+                            <p>• Realizar trabajos en equipo rápido.</p>
+                            <p>• Tomar apuntes de clase al unísono.</p>
+                            <p>• Compartir ideas de forma libre.</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Slide 3/10</span>
+                </div>
+
+                <!-- Diapositiva 4: Mi Huella Verde -->
+                <div id="slide-4" class="slide-content hidden flex flex-col justify-between h-full">
+                    <span class="text-xs uppercase font-extrabold text-eco-600 tracking-widest">Narración Digital Grupal</span>
+                    <div class="space-y-3 max-h-[160px] overflow-y-auto pr-2">
+                        <h3 class="text-lg font-bold text-slate-950 font-serif italic">Mi Huella Verde</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">"Todo comenzó cuando en la escuela nos pidieron investigar sobre el medio ambiente. Al principio pensamos que sería sencillo, pero vimos mucha basura en las calles y pocas personas reciclaban. Decidimos trabajar juntos para hacer un cambio. Organizamos una campaña para separar residuos y vimos resultados positivos en menos plástico usado..."</p>
+                    </div>
+                    <div class="bg-eco-50 p-3 rounded-xl border border-eco-100 text-[10px] text-eco-800">
+                        <strong>Lección Aprendida:</strong> Cuidar el medio ambiente no depende de una sola persona, sino del esfuerzo de todos.
+                    </div>
+                </div>
+
+                <!-- Diapositiva 5: Lluvia de Ideas y Propuesta -->
+                <div id="slide-5" class="slide-content hidden flex flex-col justify-between h-full">
+                    <span class="text-xs uppercase font-extrabold text-amber-600 tracking-widest">Lluvia de Ideas</span>
+                    <div class="space-y-2">
+                        <h3 class="text-lg sm:text-xl font-bold text-slate-900">"Pequeñas acciones, pueden lograr un gran cambio"</h3>
+                        <p class="text-xs text-slate-500">Nuestra propuesta es colocar botes separados identificados en el aula para evitar que la basura se mezcle en un único depósito:</p>
+                        <div class="grid grid-cols-3 gap-2.5 text-[10px] sm:text-xs">
+                            <div class="p-2 bg-amber-50 rounded-xl border border-amber-200">🟩 Plástico (envases limpios)</div>
+                            <div class="p-2 bg-blue-50 rounded-xl border border-blue-200">🟦 Papel y Cartón (hojas)</div>
+                            <div class="p-2 bg-emerald-50 rounded-xl border border-emerald-200">🟩 Orgánica (restos de fruta)</div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Slide 5/10</span>
+                </div>
+
+                <!-- Diapositiva 6: Leyenda y Relatos -->
+                <div id="slide-6" class="slide-content hidden flex flex-col justify-between h-full">
+                    <span class="text-xs uppercase font-extrabold text-eco-600 tracking-widest">Relatos Tradicionales</span>
+                    <div class="space-y-3">
+                        <h3 class="text-lg font-bold text-slate-900">Leyenda Ambiental del Bosque</h3>
+                        <p class="text-xs text-slate-600 italic leading-relaxed">"Había una vez un bosque lleno de vida que se volvió gris y sin animales por culpa de la basura. Un grupo de jóvenes tomó la iniciativa, limpió los ríos y educó a los pobladores para separar el plástico, el vidrio y el papel. Desde entonces el bosque floreció de nuevo..."</p>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Slide 6/10</span>
+                </div>
+
+                <!-- Diapositiva 7: Resultados de Encuestas -->
+                <div id="slide-7" class="slide-content hidden flex flex-col justify-between h-full">
+                    <span class="text-xs uppercase font-extrabold text-indigo-600 tracking-widest">Evidencia Estadística</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                        <div class="space-y-2 text-xs">
+                            <h3 class="font-bold text-slate-900">¿Qué se recicla en casa?</h3>
+                            <p class="text-slate-500">Datos obtenidos de 31 respuestas estudiantiles:</p>
+                            <p>🥤 <strong>Botellas de Plástico:</strong> 64.5%</p>
+                            <p>🥫 <strong>Latas de Aluminio:</strong> 25.8%</p>
+                            <p>📦 <strong>Papel y Vidrio:</strong> &lt; 10%</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-xl text-xs text-indigo-900 border border-indigo-100">
+                            <strong>Interpretación:</strong> La separación se enfoca casi exclusivamente en plástico de bebidas. Hay una necesidad clara de educar sobre reciclaje de papel y vidrio.
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Slide 7/10</span>
+                </div>
+
+                <!-- Diapositiva 8: Conclusiones Generales -->
+                <div id="slide-8" class="slide-content hidden flex flex-col justify-between h-full">
+                    <span class="text-xs uppercase font-extrabold text-eco-600 tracking-widest">Cierre de Proyecto</span>
+                    <div class="space-y-3">
+                        <h3 class="text-lg font-bold text-slate-950">Conclusiones Generales de la Investigación</h3>
+                        <ul class="text-[11px] text-slate-600 space-y-1.5">
+                            <li>📊 <strong>Hábitos Parciales:</strong> Se limita casi únicamente a envases plásticos de bebidas.</li>
+                            <li>🌱 <strong>Excelente Motivación:</strong> El 86.7% lo hace por conciencia, una base ideal para educar.</li>
+                            <li>⚠️ <strong>Porcentajes Descuidados:</strong> El 22.6% tira las botellas plásticas a la basura convencional.</li>
+                        </ul>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Slide 8/10</span>
+                </div>
+
+                <!-- Diapositiva 9: Conclusiones Personales -->
+                <div id="slide-9" class="slide-content hidden flex flex-col justify-between h-full">
+                    <span class="text-xs uppercase font-extrabold text-eco-600 tracking-widest">Voces del Equipo</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[10px]">
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                            <p class="font-bold text-slate-900">Briana Andrea:</p>
+                            <p class="text-slate-500 italic">"Separar y reciclar botellas disminuye la basura diaria drásticamente en el aula."</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                            <p class="font-bold text-slate-900">Carol Sofía:</p>
+                            <p class="text-slate-500 italic">"Pequeñas acciones coordinadas entre la escuela y el hogar logran un gran impacto."</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                            <p class="font-bold text-slate-900">Dulce Ivonne:</p>
+                            <p class="text-slate-500 italic">"El cuidado del planeta promueve valores como la responsabilidad y el trabajo en equipo."</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Slide 9/10</span>
+                </div>
+
+                <!-- Diapositiva 10: Gracias -->
+                <div id="slide-10" class="slide-content hidden flex flex-col justify-center items-center h-full text-center space-y-4">
+                    <div class="w-16 h-16 rounded-full bg-eco-100 flex items-center justify-center text-eco-600 text-3xl">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 font-serif italic">¡GRACIAS POR SU ATENCIÓN!</h2>
+                    <p class="text-xs sm:text-sm text-eco-800 font-bold uppercase tracking-widest bg-eco-50 px-4 py-1.5 rounded-full">Grupo 206 • Cultura Digital</p>
+                </div>
+
+            </div>
+
+            <!-- Controles del Slideshow -->
+            <div class="flex items-center justify-between mt-6">
+                <button onclick="changeSlide(-1)" class="px-5 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold text-xs transition-all flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-arrow-left"></i> Anterior
+                </button>
+                <div class="flex gap-1" id="slideshow-dots">
+                    <!-- Generado por Javascript -->
+                </div>
+                <button onclick="changeSlide(1)" class="px-5 py-2.5 rounded-xl bg-eco-600 text-white hover:bg-eco-700 font-bold text-xs transition-all flex items-center gap-1.5 shadow-md shadow-eco-200">
+                    Siguiente <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER GENERAL DE LA WEB -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+            <div class="flex items-center justify-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-eco-500 animate-ping"></span>
+                <span class="text-sm text-slate-200 font-bold tracking-widest uppercase">CULTURA DIGITAL • COLEGIO VERDE</span>
+            </div>
+            <p class="text-xs max-w-md mx-auto leading-relaxed">
+                Proyecto desarrollado colectivamente por Carol Sofía, Briana Andrea y Dulce Ivonne. Grupo 206. Licencia de software educativo libre y colaborativo.
+            </p>
+            <div class="pt-4 border-t border-slate-800 flex flex-wrap gap-4 justify-center text-xs">
+                <span><i class="fa-solid fa-graduation-cap"></i> Proyecto del Semestre</span>
+                <span>•</span>
+                <span><i class="fa-solid fa-recycle"></i> 100% Ecológico</span>
+                <span>•</span>
+                <span><i class="fa-solid fa-shield"></i> Privacidad de Datos</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPTS -->
+    <script>
+        // CONFIGURACIÓN DE MODOS (SITIO VS SLIDES)
+        let currentMode = 'site';
+        function switchMode(mode) {
+            currentMode = mode;
+            const siteView = document.getElementById('view-site');
+            const slidesView = document.getElementById('view-slides');
+            const btnSite = document.getElementById('btn-mode-site');
+            const btnSlides = document.getElementById('btn-mode-slides');
+
+            if (mode === 'site') {
+                siteView.classList.remove('hidden');
+                slidesView.classList.add('hidden');
+                btnSite.className = "px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all bg-white text-eco-700 shadow-sm";
+                btnSlides.className = "px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all text-slate-600 hover:text-slate-900";
+            } else {
+                siteView.classList.add('hidden');
+                slidesView.classList.remove('hidden');
+                btnSite.className = "px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all text-slate-600 hover:text-slate-900";
+                btnSlides.className = "px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all bg-white text-eco-700 shadow-sm";
+                // Renderizar slideshow dots si aún no existen
+                setupSlideshowDots();
+            }
+        }
+
+        // LÓGICA DE CO-AUTORÍA SIMULADA (CryptPad y Riseup Pad)
+        const coAuthorComments = {
+            cryptpad: [
+                "Carol Díaz se ha unido para editar.",
+                "Carol Díaz escribió: 'Las tapitas plásticas también pueden donarse a fundaciones'",
+                "Dulce Ivonne está en línea.",
+                "Dulce Ivonne escribió: '¡Sí! Hay que etiquetar bien los contenedores'"
+            ],
+            riseup: [
+                "Un usuario anónimo se unió.",
+                "Anon-1 escribió: 'Lema: Reciclar no es una obligación, es cuidar nuestro hogar.'",
+                "Anon-2 escribió: 'Llevar envases limpios es la clave'"
+            ]
+        };
+
+        function simulateCoAuthor(platform) {
+            const coAuthorDiv = document.getElementById(`${platform}-coauthor`);
+            const comments = coAuthorComments[platform];
+            // Mostrar comentarios simulados aleatorios basados en la actividad
+            const randomComment = comments[Math.floor(Math.random() * comments.length)];
+            coAuthorDiv.innerHTML = `<i class="fa-solid fa-sparkles"></i> Actividad del equipo: ${randomComment}`;
+            setTimeout(() => {
+                coAuthorDiv.innerHTML = "";
+            }, 4000);
+        }
+
+        // AUDIO RELATO SIMULADO (PODCAST VISUALIZER)
+        let isPodcastPlaying = false;
+        let podcastTimerInterval;
+        let currentSeconds = 0;
+        const totalDuration = 165; // 2 min 45 seg
+
+        function togglePodcast() {
+            const playIcon = document.getElementById('play-icon');
+            const waveBars = document.querySelectorAll('#wave-container div');
+
+            if (!isPodcastPlaying) {
+                // Play
+                isPodcastPlaying = true;
+                playIcon.className = "fa-solid fa-pause";
+                // Animación ecualizador
+                waveBars.forEach((bar, i) => {
+                    bar.style.animation = `bounce-bar ${0.6 + i * 0.1}s ease-in-out infinite`;
+                });
+                // Iniciar contador de tiempo
+                podcastTimerInterval = setInterval(() => {
+                    currentSeconds++;
+                    if (currentSeconds >= totalDuration) {
+                        currentSeconds = 0;
+                        togglePodcast(); // Terminar
+                    }
+                    const mins = Math.floor(currentSeconds / 60).toString().padStart(2, '0');
+                    const secs = (currentSeconds % 60).toString().padStart(2, '0');
+                    document.getElementById('podcast-timer').innerText = `${mins}:${secs} / 02:45`;
+                }, 1000);
+            } else {
+                // Pause
+                isPodcastPlaying = false;
+                playIcon.className = "fa-solid fa-play ml-1";
+                waveBars.forEach(bar => {
+                    bar.style.animation = 'none';
+                    bar.style.height = '4px';
+                });
+                clearInterval(podcastTimerInterval);
+            }
+        }
+
+        // WEB AUDIO API SYNTHESIZER (Sonidos interactivos retro de éxito/error)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'success') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.25);
+            } else if (type === 'error') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime); 
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            }
+        }
+
+        // LÓGICA DE MINIJUEGO: CLASIFICADOR ECOLOGICO
+        const gameItems = [
+            { name: 'Botella de Plástico', type: 'plastico', icon: '🥤' },
+            { name: 'Caja de Cartón', type: 'papel', icon: '📦' },
+            { name: 'Cáscara de Plátano', type: 'organico', icon: '🍌' },
+            { name: 'Periódico Viejo', type: 'papel', icon: '📰' },
+            { name: 'Envase de Jugo', type: 'plastico', icon: '🧃' },
+            { name: 'Manzana Mordida', type: 'organico', icon: '🍎' },
+            { name: 'Bolsa de Plástico', type: 'plastico', icon: '🛍️' },
+            { name: 'Cuaderno Usado', type: 'papel', icon: '📓' }
+        ];
+
+        let currentItemIndex = 0;
+        let gameScore = 0;
+
+        function submitClassification(chosenType) {
+            const currentItem = gameItems[currentItemIndex];
+            const feedbackDiv = document.getElementById('game-feedback');
+            const feedbackIcon = document.getElementById('game-feedback-icon');
+            const feedbackText = document.getElementById('game-feedback-text');
+
+            if (chosenType === currentItem.type) {
+                // Acierto
+                playSound('success');
+                gameScore += 10;
+                document.getElementById('game-score').innerText = `${gameScore.toString().padStart(2, '0')} pts`;
+                feedbackIcon.innerText = "✅";
+                feedbackText.innerText = "¡Correcto! +10 pts";
+                feedbackDiv.className = "absolute inset-0 bg-emerald-950/90 backdrop-blur-sm flex flex-col items-center justify-center opacity-100 transition-all duration-200 pointer-events-auto";
+            } else {
+                // Fallo
+                playSound('error');
+                feedbackIcon.innerText = "❌";
+                feedbackText.innerText = `Incorrecto. Era ${currentItem.type === 'plastico' ? 'Plástico' : currentItem.type === 'papel' ? 'Papel/Cartón' : 'Orgánico'}`;
+                feedbackDiv.className = "absolute inset-0 bg-red-950/90 backdrop-blur-sm flex flex-col items-center justify-center opacity-100 transition-all duration-200 pointer-events-auto";
+            }
+
+            // Transición a la siguiente pregunta
+            setTimeout(() => {
+                feedbackDiv.className = "absolute inset-0 bg-slate-900/90 backdrop-blur-sm flex flex-col items-center justify-center opacity-0 transition-all duration-200 pointer-events-none";
+                
+                // Avanzar índice
+                currentItemIndex = (currentItemIndex + 1) % gameItems.length;
+                
+                // Mostrar nuevo elemento
+                const nextItem = gameItems[currentItemIndex];
+                document.getElementById('game-item-icon').innerText = nextItem.icon;
+                document.getElementById('game-item-name').innerText = nextItem.name;
+            }, 1800);
+        }
+
+        function resetGame() {
+            gameScore = 0;
+            currentItemIndex = 0;
+            document.getElementById('game-score').innerText = "00 pts";
+            const firstItem = gameItems[0];
+            document.getElementById('game-item-icon').innerText = firstItem.icon;
+            document.getElementById('game-item-name').innerText = firstItem.name;
+        }
+
+        // SECTOR DE OPINIONES PERSONALES DINÁMICAS
+        const personalConclusions = {
+            briana: {
+                text: '"En conclusión, considero que reciclar el plástico es una de las formas más sencillas en las que nosotros como estudiantes podemos ayudar al medio ambiente. Muchas veces no nos damos cuenta de la cantidad de basura que generamos diariamente, especialmente con botellas, bolsas y envolturas. Si aprendemos a separar y reciclar estos residuos, podemos disminuir la contaminación y cuidar mejor nuestro planeta para el futuro."',
+                name: "Briana Andrea Navarro Puente",
+                avatar: "👧"
+            },
+            carol: {
+                text: '"Personalmente, pienso que el reciclaje de plástico también ayuda a crear conciencia en las personas sobre la importancia de cuidar los recursos naturales. En la escuela y en casa podemos empezar con pequeñas acciones, como reutilizar botellas o usar menos plástico desechable. Aunque parezcan acciones pequeñas, si muchas personas las hacen, se puede lograr un gran cambio en la comunidad."',
+                name: "Carol Sofía Díaz Morales",
+                avatar: "👩"
+            },
+            dulce: {
+                text: '"Finalmente, creo que reciclar plástico no solo beneficia al ambiente, sino también a la sociedad, porque promueve valores como la responsabilidad y el trabajo en equipo. Como estudiantes, debemos participar más en actividades ecológicas y motivar a otras personas a reciclar, ya que el cuidado del planeta es una responsabilidad de todos."',
+                name: "Dulce Ivonne Xiochitiotzi H.",
+                avatar: "🙋‍♀️"
+            }
+        };
+
+        function selectConclusion(member) {
+            // Actualizar Tabs clases
+            ['briana', 'carol', 'dulce'].forEach(m => {
+                const tab = document.getElementById(`btn-tab-${m}`);
+                if (m === member) {
+                    tab.className = "w-1/3 py-2 rounded-lg text-xs font-bold transition-all bg-white text-eco-700 shadow-sm";
+                } else {
+                    tab.className = "w-1/3 py-2 rounded-lg text-xs font-medium transition-all text-slate-600 hover:text-slate-900";
+                }
+            });
+
+            // Actualizar datos
+            const data = personalConclusions[member];
+            document.getElementById('conclusion-text').innerText = data.text;
+            document.getElementById('conclusion-name').innerText = data.name;
+            document.getElementById('conclusion-avatar').innerText = data.avatar;
+        }
+
+        // LÓGICA DE NAVEGACIÓN DIAPOSITIVAS (SLIDESHOW)
+        let currentSlideIndex = 1;
+        const totalSlides = 10;
+
+        function changeSlide(direction) {
+            // Ocultar actual
+            document.getElementById(`slide-${currentSlideIndex}`).classList.add('hidden');
+            
+            // Nuevo slide index
+            currentSlideIndex += direction;
+            if (currentSlideIndex < 1) currentSlideIndex = totalSlides;
+            if (currentSlideIndex > totalSlides) currentSlideIndex = 1;
+
+            // Mostrar nuevo
+            document.getElementById(`slide-${currentSlideIndex}`).classList.remove('hidden');
+
+            // Actualizar contador y dots
+            document.getElementById('slide-counter').innerText = `Diapositiva ${currentSlideIndex} de ${totalSlides}`;
+            updateSlideDots();
+        }
+
+        function setupSlideshowDots() {
+            const dotsContainer = document.getElementById('slideshow-dots');
+            dotsContainer.innerHTML = "";
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.id = `slide-dot-${i}`;
+                dot.className = "w-2.5 h-2.5 rounded-full bg-slate-300 transition-all";
+                dot.onclick = () => {
+                    document.getElementById(`slide-${currentSlideIndex}`).classList.add('hidden');
+                    currentSlideIndex = i;
+                    document.getElementById(`slide-${currentSlideIndex}`).classList.remove('hidden');
+                    document.getElementById('slide-counter').innerText = `Diapositiva ${currentSlideIndex} de ${totalSlides}`;
+                    updateSlideDots();
+                };
+                dotsContainer.appendChild(dot);
+            }
+            updateSlideDots();
+        }
+
+        function updateSlideDots() {
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.getElementById(`slide-dot-${i}`);
+                if (dot) {
+                    if (i === currentSlideIndex) {
+                        dot.className = "w-6 h-2.5 rounded-full bg-eco-600 transition-all";
+                    } else {
+                        dot.className = "w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all";
+                    }
+                }
+            }
+        }
+
+        // INICIALIZACIÓN DE GRÁFICOS (CHART.JS)
+        window.onload = function() {
+            // Gráfico 1: Tipo de Reciclaje
+            new Chart(document.getElementById('chart-reciclaje-tipo'), {
+                type: 'pie',
+                data: {
+                    labels: ['Botellas Plástico', 'Latas Aluminio', 'Otros (Papel/Vidrio/Bolsas)'],
+                    datasets: [{
+                        data: [64.5, 25.8, 9.7],
+                        backgroundColor: ['#22c55e', '#3b82f6', '#e2e8f0'],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                font: { size: 10, family: 'Plus Jakarta Sans' }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Gráfico 2: Motivo de Reciclaje
+            new Chart(document.getElementById('chart-reciclaje-motivo'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cuidar el Ambiente', 'Obligación', 'Ganar Dinero/Otros'],
+                    datasets: [{
+                        data: [86.7, 13.3, 0],
+                        backgroundColor: ['#10b981', '#f43f5e', '#cbd5e1'],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                font: { size: 10, family: 'Plus Jakarta Sans' }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Gráfico 3: Destino de Botellas
+            new Chart(document.getElementById('chart-reciclaje-botellas'), {
+                type: 'bar',
+                data: {
+                    labels: ['Las reutilizo / reciclo', 'Las tiro a la basura', 'Las quemo / dejo tiradas'],
+                    datasets: [{
+                        label: 'Porcentaje (%)',
+                        data: [77.4, 22.6, 0],
+                        backgroundColor: ['#22c55e', '#f43f5e', '#94a3b8'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { font: { size: 9 } }
+                        },
+                        x: {
+                            ticks: { font: { size: 9 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
